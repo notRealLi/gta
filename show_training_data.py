@@ -1,9 +1,9 @@
 import numpy as np
 import cv2
-import pickle
+import utils
+filename = utils.training_filename
 
-training_file = open('training_data.pickle', 'rb')
-training_data = pickle.load(training_file)
+training_data = np.load(filename)
 
 for frame in training_data:
     cv2.imshow('training footage', frame)

@@ -1,0 +1,1 @@
+training_filename = 'training_data.npy'

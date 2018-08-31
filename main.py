@@ -2,11 +2,17 @@ from PIL import ImageGrab
 import cv2
 import numpy as np
 import time
-import pickle
+import os.path
+import utils
+filename = utils.training_filename
 
 last_time = time.time()
 frame_count = 0
-training_data = []
+if os.path.isfile(filename):
+    training_data = list(np.load(filename))
+else:
+    training_data = []
+
 while(True):
     screen = ImageGrab.grab(bbox=(0, 40, 800, 600))
     screen_np = np.array(screen)
@@ -22,9 +28,7 @@ while(True):
         frame_count = 0
 
     if cv2.waitKey(20) & 0xFF == ord('q'): #?
-        training_file = open('training_data.pickle', 'ab')
-        pickle.dump(training_data, training_file)
-        training_file.close()
+        np.save(filename, training_data)
         cv2.destroyAllWindows()
         break
 
