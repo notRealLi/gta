@@ -1,1 +1,1 @@
-training_filename = 'training_data.npy'
+training_filename = 'data/training_data.npy'
