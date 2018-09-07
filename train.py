@@ -30,6 +30,12 @@ while(True):
 
     vertices = np.array([[0,640], [800,640], [800,300], [570,200], [230,200], [0,300]])
     screen_np_gray = religion_of_interest(img = screen_np_gray,vertices = [vertices])
+    
+    lines = cv2.HoughLinesP(screen_np_gray, 1, np.pi/180, 180, 20, 10)
+    for line in lines:
+        coords = line[0]
+        cv2.line(screen_np_gray, (coords[0], coords[1]), (coords[2], coords[3]), 255, 3)
+
     cv2.imshow('image', screen_np_gray)
 
     screen_np_gray = cv2.resize(screen_np_gray, (80, 64))
