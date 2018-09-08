@@ -6,12 +6,31 @@ import os.path
 import utils
 filename = utils.test_filename
 
-def religion_of_interest(img, vertices):
-    mask = np.zeros_like(img)
+def process_image(image):
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    edges_image = cv2.Canny(gray_image, threshold1=200, threshold2=300) # TODO: learn; tweak min and max
+
+    vertices = np.array([[0,640], [800,640], [800,350], [570,200], [230,200], [0,350]])
+    roi_image = religion_of_interest(image=edges_image, vertices=[vertices])
+
+    lines = cv2.HoughLinesP(roi_image, 1, np.pi/180, 180, 20, 15)
+    try:
+        for line in lines:
+            coords = line[0]
+            cv2.line(roi_image, (coords[0], coords[1]), (coords[2], coords[3]), 255, 3)
+    except Exception as e:
+        print(e)
+        pass
+
+    return roi_image
+
+def religion_of_interest(image, vertices):
+    mask = np.zeros_like(image)
     cv2.fillPoly(mask, vertices, 255)
     
-    return cv2.bitwise_and(mask, img)
+    return cv2.bitwise_and(mask, image)
 
+##############################Script Starts##############################
 last_time = time.time()
 frame_count = 0
 if os.path.isfile(filename):
@@ -19,27 +38,19 @@ if os.path.isfile(filename):
 else:
     training_data = []
 
-for i in range(1,6)[::-1]:
-    print(i)
-    time.sleep(1)
+# for i in range(1,6)[::-1]:
+#     print(i)
+#     time.sleep(1)
 
 while(True):
-    screen = ImageGrab.grab(bbox=(0, 40, 800, 600))
-    screen_np = np.array(screen)
-    screen_np_gray = cv2.cvtColor(screen_np, cv2.COLOR_BGR2GRAY)
-    screen_np_gray = cv2.Canny(screen_np_gray, 200, 300) # TODO: learn; tweak min and max
-    vertices = np.array([[0,640], [800,640], [800,300], [570,200], [230,200], [0,300]])
-    screen_np_gray = religion_of_interest(img = screen_np_gray,vertices = [vertices])
-    
-    lines = cv2.HoughLinesP(screen_np_gray, 1, np.pi/180, 180, 20, 10)
-    for line in lines:
-        coords = line[0]
-        cv2.line(screen_np_gray, (coords[0], coords[1]), (coords[2], coords[3]), 255, 3)
+    frame = ImageGrab.grab(bbox=(0, 40, 800, 600))
+    frame = np.array(frame)
+    processed_frame = process_image(frame)
 
-    cv2.imshow('image', screen_np_gray)
+    cv2.imshow('image', processed_frame)
 
-    screen_np_gray = cv2.resize(screen_np_gray, (80, 64))
-    training_data.append(screen_np_gray)
+    processed_frame = cv2.resize(processed_frame, (80, 64))
+    training_data.append(processed_frame)
     
     frame_count += 1
     if frame_count == 20:
