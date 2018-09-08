@@ -6,9 +6,6 @@ filename = 'data/test_data.npy'
 training_data = np.load(filename)
 
 for frame in training_data:
-    frame = cv2.Canny(frame, 40, 80) # TODO: learn; tweak min and max
-    vertices = np.array([[0,640], [800,640], [800,300], [570,200], [230,200], [0,300]])
-    frame = region_of_interest(frame, [vertices])
     cv2.imshow('frame', frame)
 
     if cv2.waitKey(20) & 0xFF == ord('q'):

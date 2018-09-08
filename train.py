@@ -27,7 +27,7 @@ while(True):
     screen = ImageGrab.grab(bbox=(0, 40, 800, 600))
     screen_np = np.array(screen)
     screen_np_gray = cv2.cvtColor(screen_np, cv2.COLOR_BGR2GRAY)
-    screen_np_gray = cv2.Canny(screen_np_gray, 200, 300)
+    screen_np_gray = cv2.Canny(screen_np_gray, 200, 300) # TODO: learn; tweak min and max
     vertices = np.array([[0,640], [800,640], [800,300], [570,200], [230,200], [0,300]])
     screen_np_gray = religion_of_interest(img = screen_np_gray,vertices = [vertices])
     
