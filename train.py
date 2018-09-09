@@ -7,13 +7,13 @@ filename = test_filename
 
 def process_image(image):
     processed_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    processed_image = cv2.Canny(processed_image, threshold1=200, threshold2=300) # TODO: learn; tweak min and max
+    processed_image = cv2.Canny(processed_image, threshold1=50, threshold2=300) # TODO: learn; tweak min and max
     processed_image = cv2.GaussianBlur(processed_image, (3,3), 0)
 
     vertices = np.array([[0,640], [800,640], [800,350], [570,200], [230,200], [0,350]])
     processed_image = religion_of_interest(image=processed_image, vertices=[vertices])
 
-    lines = cv2.HoughLinesP(processed_image, 1, np.pi/180, 180, 1, 60)
+    lines = cv2.HoughLinesP(image=processed_image, rho=1, theta=np.pi/180, threshold=180, minLineLength=50, maxLineGap=15)
     try:
         for line in lines:
             coords = line[0]
