@@ -1,10 +1,9 @@
 from PIL import ImageGrab
 import cv2
 import numpy as np
-import time
 import os.path
-import utils
-filename = utils.test_filename
+from utils import test_filename, training_filename, timer, time_now
+filename = test_filename
 
 def process_image(image):
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -31,17 +30,15 @@ def religion_of_interest(image, vertices):
     return cv2.bitwise_and(mask, image)
 
 ##############################Script Starts##############################
-last_time = time.time()
-frame_count = 0
 if os.path.isfile(filename):
     training_data = list(np.load(filename))
 else:
     training_data = []
 
-# for i in range(1,6)[::-1]:
-#     print(i)
-#     time.sleep(1)
+timer(5)
 
+last_time = time_now()
+frame_count = 0
 while(True):
     frame = ImageGrab.grab(bbox=(0, 40, 800, 600))
     frame = np.array(frame)
@@ -54,9 +51,9 @@ while(True):
     
     frame_count += 1
     if frame_count == 20:
-        avg_time_elapsed = (time.time() - last_time) / 20
+        avg_time_elapsed = (time_now() - last_time) / 20
         print('FPS: ' + str(int(1/avg_time_elapsed)))
-        last_time = time.time()
+        last_time = time_now()
         frame_count = 0
 
     if cv2.waitKey(20) & 0xFF == ord('q'): #?
