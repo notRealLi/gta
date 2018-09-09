@@ -6,23 +6,23 @@ from utils import test_filename, training_filename, timer, time_now
 filename = test_filename
 
 def process_image(image):
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    edges_image = cv2.Canny(gray_image, threshold1=100, threshold2=300) # TODO: learn; tweak min and max
-    blurred_image = cv2.GaussianBlur(edges_image, (5,5), 0)
-    # cv2.imshow('image', gray_image)
-    vertices = np.array([[0,640], [800,640], [800,350], [570,200], [230,200], [0,350]])
-    roi_image = religion_of_interest(image=blurred_image, vertices=[vertices])
+    processed_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    processed_image = cv2.Canny(processed_image, threshold1=200, threshold2=300) # TODO: learn; tweak min and max
+    processed_image = cv2.GaussianBlur(processed_image, (3,3), 0)
 
-    lines = cv2.HoughLinesP(roi_image, 1, np.pi/180, 180, 20, 15)
+    vertices = np.array([[0,640], [800,640], [800,350], [570,200], [230,200], [0,350]])
+    processed_image = religion_of_interest(image=processed_image, vertices=[vertices])
+
+    lines = cv2.HoughLinesP(processed_image, 1, np.pi/180, 180, 1, 60)
     try:
         for line in lines:
             coords = line[0]
-            cv2.line(roi_image, (coords[0], coords[1]), (coords[2], coords[3]), 255, 3)
+            cv2.line(processed_image, (coords[0], coords[1]), (coords[2], coords[3]), 255, 3)
     except Exception as e:
         print(e)
         pass
 
-    return roi_image
+    return processed_image
 
 def religion_of_interest(image, vertices):
     mask = np.zeros_like(image)
@@ -36,7 +36,7 @@ if os.path.isfile(filename):
 else:
     training_data = []
 
-timer(4)
+timer(1)
 
 last_time = time_now()
 frame_count = 0
