@@ -7,10 +7,11 @@ filename = test_filename
 
 def process_image(image):
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    edges_image = cv2.Canny(gray_image, threshold1=200, threshold2=300) # TODO: learn; tweak min and max
-
+    edges_image = cv2.Canny(gray_image, threshold1=100, threshold2=300) # TODO: learn; tweak min and max
+    blurred_image = cv2.GaussianBlur(edges_image, (5,5), 0)
+    # cv2.imshow('image', gray_image)
     vertices = np.array([[0,640], [800,640], [800,350], [570,200], [230,200], [0,350]])
-    roi_image = religion_of_interest(image=edges_image, vertices=[vertices])
+    roi_image = religion_of_interest(image=blurred_image, vertices=[vertices])
 
     lines = cv2.HoughLinesP(roi_image, 1, np.pi/180, 180, 20, 15)
     try:
@@ -35,7 +36,7 @@ if os.path.isfile(filename):
 else:
     training_data = []
 
-timer(5)
+timer(4)
 
 last_time = time_now()
 frame_count = 0
