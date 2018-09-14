@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import os.path
 from utils import test_filename, training_filename, timer, time_now
-from image_processing import *
+from image_processing import process_image
 filename = test_filename
 
 if os.path.isfile(filename):

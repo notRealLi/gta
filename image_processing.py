@@ -12,10 +12,12 @@ def process_image(image):
     processed_image = religion_of_interest(image=processed_image, vertices=[vertices])
 
     lines = cv2.HoughLinesP(image=processed_image, rho=1, theta=np.pi/180, threshold=180, minLineLength=100, maxLineGap=5)
+
     try:
         for line in lines:
             coords = line[0]
-            cv2.line(processed_image, (coords[0], coords[1]), (coords[2], coords[3]), 255, 3)
+            if abs((coords[3]-coords[1])/(coords[2]-coords[0])) > 0.3:
+                cv2.line(processed_image, (coords[0], coords[1]), (coords[2], coords[3]), 255, 3)
     except Exception as e:
         print(e)
         pass
@@ -27,3 +29,20 @@ def religion_of_interest(image, vertices):
     cv2.fillPoly(mask, vertices, 255)
     
     return cv2.bitwise_and(mask, image)
+
+# def find_lanes(lines):
+#     indexes = []
+
+#     for line in lines:
+#         coords = line[0]
+#         x1 = coords[0]
+#         y1 = coords[1]
+#         x2 = coords[2]
+#         y2 = coords[3]
+
+#         if abs((y2-y1)/(x2-x1)) < 0.5:
+#             lines.remove(line) 
+    
+#     return lines
+
+
