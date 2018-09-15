@@ -11,7 +11,7 @@ if os.path.isfile(filename):
 else:
     training_data = []
 
-timer(1)
+timer(4)
 
 last_time = time_now()
 frame_count = 0

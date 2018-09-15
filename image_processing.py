@@ -3,16 +3,15 @@ import numpy as np
 
 def process_image(image):
     processed_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    processed_image = cv2.Canny(processed_image, threshold1=50, threshold2=300) # TODO: learn; tweak min and max
+    processed_image = cv2.Canny(processed_image, threshold1=150, threshold2=200) # TODO: learn; tweak min and max
     processed_image = cv2.GaussianBlur(processed_image, (3,3), 0)
-
+    
     vertices = np.array([[0,600], 
-                         [180,470], [620,470], 
-                         [800,600], [800,350], [570,200], [230,200], [0,350]])
+                         #[180,470], [620,470], 
+                         [800,600], [800,250], [570,200], [230,200], [0,250]])
     processed_image = religion_of_interest(image=processed_image, vertices=[vertices])
 
-    lines = cv2.HoughLinesP(image=processed_image, rho=1, theta=np.pi/180, threshold=180, minLineLength=100, maxLineGap=5)
-
+    lines = cv2.HoughLinesP(image=processed_image, rho=1, theta=np.pi/180, threshold=180, minLineLength=170, maxLineGap=5)
     try:
         for line in lines:
             coords = line[0]
