@@ -11,10 +11,17 @@ def process_image(image):
                          [800,600], [800,250], [570,200], [230,200], [0,250]])
     processed_image = religion_of_interest(image=processed_image, vertices=[vertices])
 
-    lines = cv2.HoughLinesP(image=processed_image, rho=1, theta=np.pi/180, threshold=180, minLineLength=170, maxLineGap=5)
+    lines = cv2.HoughLinesP(image=processed_image, rho=1, theta=np.pi/180, threshold=180, minLineLength=80, maxLineGap=5)
     lines = find_lanes(lines)
     try:
         for line in lines:
+            # line = line[0]
+
+            # A = np.vstack([(line[0], line[2]), np.ones(2)]).T
+            # m, b = np.linalg.lstsq(A, (line[1], line[3]))[0]
+        
+            # if abs(m) < 2.5 and abs(m) > 0.3:
+            #     cv2.line(processed_image, (line[0], line[1]), (line[2], line[3]), 255, 3)
             cv2.line(processed_image, (line[0], line[1]), (line[2], line[3]), 255, 3)
     except Exception as e:
         print(e)
@@ -48,7 +55,7 @@ def religion_of_interest(image, vertices):
     return cv2.bitwise_and(mask, image)
 
 
-def find_lanes(lines, min_y=250, max_y=400):
+def find_lanes(lines, min_y=250, max_y=600):
     
     ####################### Helper functions #######################    
     def average_regression(regressions):
@@ -81,6 +88,8 @@ def find_lanes(lines, min_y=250, max_y=400):
         print('no lines')
         return       
     regression_dict = {'right': [], 'left': []}
+    max_y = 600 
+    min_y = 999
 
     for line in lines:
         coords = line[0]
@@ -88,6 +97,11 @@ def find_lanes(lines, min_y=250, max_y=400):
         y1 = coords[1]
         x2 = coords[2]
         y2 = coords[3]
+
+        if y1 < min_y:
+            min_y = y1
+        if y2 < min_y:
+            min_y = y2
 
         A = np.vstack([(x1, x2), np.ones(2)]).T
         m, b = np.linalg.lstsq(A, (y1, y2))[0]
